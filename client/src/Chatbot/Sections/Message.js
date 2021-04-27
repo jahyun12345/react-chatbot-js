@@ -9,7 +9,7 @@ function Message(props) {
             <List.Item.Meta
                 avatar={<Avatar icon={AvatarSrc} />}
                 title={props.who}
-                description={props.text}
+                description={props.desc}
             />
         </List.Item>
     )

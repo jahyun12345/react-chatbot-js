@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveMessage } from '../_actions/message_actions';
 import Message from './Sections/Message';
 import CardItem from './Sections/CardItem';
-import { List, Icon, Avatar } from 'antd';
 
 function Chatbot() {
     // trigger the action
@@ -39,7 +38,9 @@ function Chatbot() {
             // send request to text query route
             // text query route에서 async await 사용하였으므로 설정 필요
             const response = await Axios.post('/api/dialogflow/textQuery', textQueryVariables);
-            // content = response.data.fulfillmentMessages[0]일 때 여러개의 메세지를 반환하더라도 한 값만 보이기 때문에
+            // content = response.data.fulfillmentMessages[0]일 때
+            // 여러개의 메세지를 반환하더라도 한 값만 보이기 때문에
+            // for loop 설정
             for (let content of response.data.fulfillmentMessages) {
                 let conversation = {
                     who: 'bot',
@@ -111,24 +112,15 @@ function Chatbot() {
     }
 
     const renderOneMessage = (message, index) => {
-        console.log(message);
+        // console.log(message);
 
         // need to give some condition to seperate message kinds
         // template for text message
         if (message.content && message.content.text && message.content.text.text) {
-            return <Message key={index} who={message.who} text={message.content.text.text} />
+            return <Message key={index} who={message.who} desc={message.content.text.text} />
         // template for card message
         } else if (message.content && message.content.payload.fields.card) {
-            const AvatarSrc = message.who === 'bot' ? <Icon type="robot" /> : <Icon type="smile" />;
-            return <div>
-                <List.Item style={{padding:'1rem'}}>
-                    <List.Item.Meta
-                        avatar={<Avatar icon={AvatarSrc} />}
-                        title={message.who}
-                        description={renderCards(message.content.payload.fields.card.listValue.values)}
-                    />
-                </List.Item>
-            </div>
+            return <Message key={index} who={message.who} desc={renderCards(message.content.payload.fields.card.listValue.values)} />
         }
     }
 
