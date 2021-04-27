@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Axios from 'axios';
 
 function Chatbot() {
+    // 입력 없이 반환되는 값이기 때문에 useEffect에서 eventQuery 호출
+    useEffect(() => {
+        eventQuery('welcomeToMyWebsite');
+    }, [])
+
     const textQuery = async (text) => {
         // let conversations = [];
 
@@ -42,6 +47,36 @@ function Chatbot() {
             }
             console.log({catchConversation:conversation});
             // conversations.push(conversation);
+        }
+    }
+
+    const eventQuery = async (event) => {
+        // 입력 없이 반환되는 값이기 때문에 conversation 필요 X
+        // need to take care of the message chatbot sent
+        const textQueryVariables = {
+            event
+        }
+        
+        try {
+            // send request to text query route
+            // text query route에서 async await 사용하였으므로 설정 필요
+            const response = await Axios.post('/api/dialogflow/eventQuery', textQueryVariables);
+            const content = response.data.fulfillmentMessages[0];
+            let conversation = {
+                who: 'bot',
+                content: content
+            }
+            console.log({tryConversation:conversation});
+        } catch (error) {
+            let conversation = {
+                who: 'bot',
+                content: {
+                    text: {
+                        text: "Error just occured, please check the problem."
+                    }
+                }
+            }
+            console.log({catchConversation:conversation});
         }
     }
 
