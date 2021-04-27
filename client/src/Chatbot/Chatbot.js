@@ -1,25 +1,30 @@
 import React, { useEffect } from 'react';
 import Axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveMessage } from '../_actions/message_actions';
 
 function Chatbot() {
+    // trigger the action
+    const dispatch = useDispatch();
+
     // 입력 없이 반환되는 값이기 때문에 useEffect에서 eventQuery 호출
     useEffect(() => {
         eventQuery('welcomeToMyWebsite');
     }, [])
 
     const textQuery = async (text) => {
-        // let conversations = [];
-
         // need to take care of the message client sent
         let conversation = {
-            who: 'user',
+            who: 'client',
             content: {
                 text: {
                     text: text
                 }
             }
         }
-        // conversations.push(conversation);
+        dispatch(saveMessage(conversation));
+        // console.log({clientConversation:conversation});
+
         // need to take care of the message chatbot sent
         const textQueryVariables = {
             text
@@ -34,8 +39,8 @@ function Chatbot() {
                 who: 'bot',
                 content: content
             }
-            console.log({tryConversation:conversation});
-            // conversations.push(conversation);
+            dispatch(saveMessage(conversation));
+            // console.log({text_tryConversation:conversation});
         } catch (error) {
             conversation = {
                 who: 'bot',
@@ -45,8 +50,8 @@ function Chatbot() {
                     }
                 }
             }
-            console.log({catchConversation:conversation});
-            // conversations.push(conversation);
+            dispatch(saveMessage(conversation));
+            // console.log({text_catchConversation:conversation});
         }
     }
 
@@ -66,7 +71,8 @@ function Chatbot() {
                 who: 'bot',
                 content: content
             }
-            console.log({tryConversation:conversation});
+            dispatch(saveMessage(conversation));
+            // console.log({event_tryConversation:conversation});
         } catch (error) {
             let conversation = {
                 who: 'bot',
@@ -76,7 +82,8 @@ function Chatbot() {
                     }
                 }
             }
-            console.log({catchConversation:conversation});
+            dispatch(saveMessage(conversation));
+            // console.log({event_catchConversation:conversation});
         }
     }
 
@@ -103,7 +110,6 @@ function Chatbot() {
                 onKeyPress={keyPressHandler}
                 type="text"
             />
-
         </div>
     )
 }

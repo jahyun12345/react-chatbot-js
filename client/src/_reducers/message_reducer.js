@@ -7,6 +7,7 @@ export default function (state = {messages:[]}, action) {
         case SAVE_MESSAGE:
             return {
                 ...state,
+                // payload: conversation data
                 messages: state.messages.concat(action.payload)
             }
         default:
